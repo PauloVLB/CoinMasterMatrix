@@ -10,7 +10,9 @@ jobs:
   build:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v3
+      - name: Checkout code
+        uses: actions/checkout@v3
+
       - name: Set up JDK 21
         uses: actions/setup-java@v3
         with:
@@ -18,7 +20,7 @@ jobs:
           distribution: 'temurin'
           cache: maven
 
-      - name: Build with Maven
+      - name: Build with Maven (Resolve Dependencies, Compile and Test)
         working-directory: coinmaster
         run: mvn -B clean package --file pom.xml
 
@@ -26,4 +28,4 @@ jobs:
         uses: mathieudutour/github-tag-action@v6.2
         with:
           github_token: ${{ secrets.GITHUB_TOKEN }}
-          release_branches: 
+          
