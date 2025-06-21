@@ -27,7 +27,7 @@ jobs:
       - name: Create tag
         id: create_tag
         run: |
-          TAG_NAME="build-$(date +%s)"
+          export TAG_NAME="build-$(date +%s)"
           echo "TAG_NAME=$TAG_NAME" >> $GITHUB_ENV
           git config user.name "${{ github.actor }}"
           git config user.email "${{ github.actor }}@users.noreply.github.com"
