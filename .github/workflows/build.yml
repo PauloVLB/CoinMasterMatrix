@@ -24,8 +24,11 @@ jobs:
         working-directory: coinmaster
         run: mvn -B clean package --file pom.xml
 
-      - name: Setup tag
-        uses: mathieudutour/github-tag-action@v6.2
-        with:
-          github_token: ${{ secrets.GITHUB_TOKEN }}
-          pre_release_branches: main
+      - name: Create tag
+        id: create_tag
+        run: |
+          TAG_NAME="build-$(date +%s)"
+          echo "TAG_NAME=$TAG_NAME" >> $GITHUB_ENV
+          git tag $TAG_NAME
+          git push origin $TAG_NAME
+          
