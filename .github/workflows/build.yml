@@ -19,6 +19,7 @@ jobs:
           cache: maven
 
       - name: Build with Maven
+        working-directory: coinmaster
         run: mvn -B clean package --file pom.xml
 
       - name: Setup tag
