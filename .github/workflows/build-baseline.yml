@@ -51,3 +51,14 @@ jobs:
           git config user.email "${{ github.actor }}@users.noreply.github.com"
           git tag "${NEW_TAG}"
           git push origin "${NEW_TAG}"
+
+      - name: Package build as zip
+        working-directory: coinmaster/target
+        run: |
+          zip -r ../../${TAG_NAME}.zip .
+
+      - name: Upload build artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: ${{ env.TAG_NAME }}
+          path: ${{ github.workspace }}/${{ env.TAG_NAME }}.zip
