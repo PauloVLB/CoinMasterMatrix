@@ -23,7 +23,11 @@ jobs:
       - name: Build with Maven (Resolve Dependencies, Compile and Test)
         working-directory: coinmaster
         run: mvn -B clean package --file pom.xml
-# asdasd
+
+      - name: Run PMD static analysis
+        working-directory: coinmaster
+        run: mvn pmd:pmd
+        
       - name: Create RC tag
         id: create_tag
         run: |
