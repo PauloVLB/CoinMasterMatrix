@@ -60,5 +60,5 @@ jobs:
       - name: Upload build artifact
         uses: actions/upload-artifact@v4
         with:
-          name: ${{ env.TAG_NAME }}
+          name: ${{ env.TAG_NAME }}.zip
           path: ${{ github.workspace }}/${{ env.TAG_NAME }}.zip
