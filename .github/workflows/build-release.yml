@@ -1,0 +1,57 @@
+name: Java CI with Maven and Tagging
+
+on:
+  push:
+    branches: production
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+        with:
+          fetch-depth: 0
+
+      - name: Set up JDK 21
+        uses: actions/setup-java@v3
+        with:
+          java-version: '21'
+          distribution: 'temurin'
+          cache: maven
+
+      - name: Build with Maven (Resolve Dependencies, Compile and Test)
+        working-directory: coinmaster
+        run: mvn -B clean package --file pom.xml
+
+      - name: Run PMD static analysis
+        working-directory: coinmaster
+        run: mvn pmd:pmd
+        
+      - name: Create REL tag
+        id: create_rel_tag
+        run: |
+          LATEST_RC_TAG=$(git tag -l "rc-*" | sort -V | tail -n 1)
+          if [ -z "$LATEST_RC_TAG" ]; then
+            echo "Nenhuma tag rc encontrada. Não será criada tag rel."
+            exit 1
+          fi
+          X=$(echo $LATEST_RC_TAG | sed 's/rc-//' | cut -d'.' -f1)
+          REL_TAG="rel-${X}"
+          echo "REL_TAG=${REL_TAG}" >> $GITHUB_ENV
+          echo "Creating new rel tag: ${REL_TAG}"
+          git config user.name "${{ github.actor }}"
+          git config user.email "${{ github.actor }}@users.noreply.github.com"
+          git tag "${REL_TAG}"
+          git push origin "${REL_TAG}"
+
+      - name: Package build as zip
+        working-directory: coinmaster/target
+        run: |
+          zip -r ../../${TAG_NAME}.zip .
+
+      - name: Upload build artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: ${{ env.TAG_NAME }}.zip
+          path: ${{ github.workspace }}/${{ env.TAG_NAME }}.zip
