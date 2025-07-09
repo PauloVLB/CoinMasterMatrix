@@ -37,7 +37,21 @@ jobs:
             exit 1
           fi
           X=$(echo $LATEST_RC_TAG | sed 's/rc-//' | cut -d'.' -f1)
-          REL_TAG="rel-${X}"
+          # Detecta se branch é hotfix
+          if [[ "${GITHUB_REF##*/}" == hotfix* ]]; then
+            # Hotfix: incrementa Y da última rel-x.y
+            LATEST_REL_TAG=$(git tag -l "rel-${X}.*" | sort -V | tail -n 1)
+            if [ -z "$LATEST_REL_TAG" ]; then
+              NEW_Y=1
+            else
+              Y=$(echo $LATEST_REL_TAG | sed "s/rel-${X}.//")
+              NEW_Y=$((Y + 1))
+            fi
+            REL_TAG="rel-${X}.${NEW_Y}"
+          else
+            # Não é hotfix: cria rel-x.0
+            REL_TAG="rel-${X}.0"
+          fi
           echo "REL_TAG=${REL_TAG}" >> $GITHUB_ENV
           echo "Creating new rel tag: ${REL_TAG}"
           git config user.name "${{ github.actor }}"
