@@ -64,5 +64,5 @@ jobs:
         with:
           context: ./coinmaster
           push: true
-          tags: coinmaster:${{ env.REL_TAG }}
+          tags: wislaargolo/coinmaster:${{ env.REL_TAG }}
 
