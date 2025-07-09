@@ -1,4 +1,4 @@
-name: Java CI with Maven and Tagging
+name: Release Workflow
 
 on:
   push:
