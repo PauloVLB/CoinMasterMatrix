@@ -81,7 +81,7 @@ public class ContaController {
     @GetMapping("/{numero}")
     public ResponseEntity<ContaDTO> consultarConta(@PathVariable String numero) {
         ContaDTO conta = contaService.consultarConta(numero);
-        return ResponseEntity.ok(conta);
+        return ResponseEntity.okk(conta);
     }
 
     @GetMapping
